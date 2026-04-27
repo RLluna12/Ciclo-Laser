@@ -12,13 +12,40 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section - Estilo KaBuM com banners */}
+      {/* Hero Section - Estilo KaBuM com categorias */}
       <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 opacity-15">
+          <Image
+            src="/images/ciclo-laser-hero.png"
+            alt="Background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,165,0,0.3),transparent_50%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,165,0,0.2),transparent_50%)]" />
         </div>
-        <div className="container mx-auto px-4 py-12 relative">
+
+        <div className="container mx-auto px-4 py-8 relative z-10">
+          {/* Categorias na Hero - Estilo KaBuM */}
+          <div className="mb-8 overflow-x-auto pb-2 -mx-4 px-4">
+            <div className="flex gap-3 min-w-max">
+              {CATEGORIES.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/produtos?categoria=${category.id}`}
+                  className="flex-shrink-0 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full font-medium transition-all text-sm md:text-base border border-white/20 hover:border-orange-400"
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {/* Banner Principal */}
             <div className="md:col-span-2 lg:col-span-1 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-6 relative overflow-hidden">
@@ -59,7 +86,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Seção de Hero com Texto */}
+          {/* Seção de Hero com Texto e Imagem */}
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
@@ -86,11 +113,11 @@ export default function HomePage() {
               <div className="relative">
                 <div className="absolute -inset-4 bg-orange-400/20 rounded-full blur-3xl" />
                 <Image
-                  src="/images/logo.png"
+                  src="/images/ciclo-laser-hero.png"
                   alt="Ciclo Laser"
-                  width={400}
-                  height={400}
-                  className="relative z-10 drop-shadow-2xl"
+                  width={450}
+                  height={450}
+                  className="relative z-10 drop-shadow-2xl rounded-lg"
                   priority
                 />
               </div>
