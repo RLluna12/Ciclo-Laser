@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ShoppingBag, ArrowLeft, CreditCard, Loader2 } from 'lucide-react'
+import { ShoppingBag, ArrowLeft, CreditCard, Loader2, Truck, AlertCircle } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
+import { calculateShipping, calculateCartWeight } from '@/lib/shipping'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FieldGroup, Field, FieldLabel, FieldSet, FieldLegend } from '@/components/ui/field'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface AddressForm {
   name: string
@@ -25,10 +27,18 @@ interface AddressForm {
   state: string
 }
 
+interface ShippingOption {
+  service: string
+  name: string
+  deadline: number
+  price: number
+}
+
 export function CheckoutContent() {
   const router = useRouter()
   const { cart, getTotal, setAddress, clearCart } = useCart()
   const [isLoading, setIsLoading] = useState(false)
+  const [shippingLoading, setShippingLoading] = useState(false)
   const [step, setStep] = useState<'address' | 'payment'>('address')
   const [form, setForm] = useState<AddressForm>({
     name: '',
@@ -42,6 +52,9 @@ export function CheckoutContent() {
     city: '',
     state: '',
   })
+  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([])
+  const [selectedShipping, setSelectedShipping] = useState<ShippingOption | null>(null)
+  const [shippingError, setShippingError] = useState<string>('')
 
   if (cart.items.length === 0) {
     return (
@@ -59,7 +72,7 @@ export function CheckoutContent() {
   }
 
   const total = getTotal()
-  const shipping = total >= 30000 ? 0 : 2500
+  const shipping = selectedShipping?.price || 2500
   const finalTotal = total + shipping
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,9 +95,36 @@ export function CheckoutContent() {
           city: data.localidade || prev.city,
           state: data.uf || prev.state,
         }))
+        // Buscar opções de frete após obter o CEP
+        await fetchShippingOptions(cep)
       }
-    } catch {
-      // Ignore errors
+    } catch (error) {
+      setShippingError('Erro ao buscar CEP')
+    }
+  }
+
+  const fetchShippingOptions = async (cep: string) => {
+    setShippingLoading(true)
+    setShippingError('')
+    try {
+      const cartWeight = calculateCartWeight(
+        cart.items.map((item) => ({
+          name: item.product.name,
+          quantity: item.quantity,
+        }))
+      )
+      
+      const options = await calculateShipping(cep, cartWeight, total)
+      setShippingOptions(options)
+      
+      // Selecionar a primeira opção por padrão (PAC)
+      if (options.length > 0) {
+        setSelectedShipping(options[0])
+      }
+    } catch (error) {
+      setShippingError('Não foi possível calcular o frete. Tente novamente.')
+    } finally {
+      setShippingLoading(false)
     }
   }
 
@@ -219,6 +259,61 @@ export function CheckoutContent() {
                       />
                     </Field>
                   </div>
+
+                  {shippingOptions.length > 0 && (
+                    <div className="mt-6 pt-6 border-t">
+                      <FieldLabel className="mb-3 block">Selecione uma opção de frete:</FieldLabel>
+                      <div className="space-y-2">
+                        {shippingOptions.map((option) => (
+                          <label
+                            key={option.service}
+                            className="flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all hover:border-blue-500"
+                            style={{
+                              borderColor:
+                                selectedShipping?.service === option.service
+                                  ? 'rgb(59, 130, 246)'
+                                  : 'rgb(229, 231, 235)',
+                              backgroundColor:
+                                selectedShipping?.service === option.service
+                                  ? 'rgb(239, 246, 255)'
+                                  : 'transparent',
+                            }}
+                          >
+                            <input
+                              type="radio"
+                              name="shipping"
+                              checked={selectedShipping?.service === option.service}
+                              onChange={() => setSelectedShipping(option)}
+                              className="mr-3"
+                            />
+                            <div className="flex-1">
+                              <div className="font-medium text-sm">{option.name}</div>
+                              <div className="text-xs text-muted-foreground">
+                                Prazo estimado: {option.deadline} dias úteis
+                              </div>
+                            </div>
+                            <div className="font-semibold text-sm">
+                              {formatPrice(option.price)}
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {shippingLoading && (
+                    <Alert className="mt-6">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <AlertDescription>Calculando opções de frete...</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {shippingError && (
+                    <Alert className="mt-6" variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{shippingError}</AlertDescription>
+                    </Alert>
+                  )}
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <Field>
@@ -381,16 +476,23 @@ export function CheckoutContent() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Frete</span>
                 <span>
-                  {shipping === 0 ? (
-                    <span className="text-green-600">Grátis</span>
+                  {selectedShipping ? (
+                    <>
+                      <div className="text-right text-xs text-muted-foreground">
+                        {selectedShipping.name}
+                      </div>
+                      <div className="text-right font-medium">
+                        {formatPrice(selectedShipping.price)}
+                      </div>
+                    </>
                   ) : (
-                    formatPrice(shipping)
+                    <span className="text-orange-500 font-medium">Calcular</span>
                   )}
                 </span>
               </div>
               <div className="flex justify-between font-bold text-lg pt-2 border-t">
                 <span>Total</span>
-                <span className="text-primary">{formatPrice(finalTotal)}</span>
+                <span className="text-blue-600">{formatPrice(finalTotal)}</span>
               </div>
             </div>
           </CardContent>
