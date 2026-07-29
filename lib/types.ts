@@ -7,6 +7,7 @@ export interface Product {
   images: string[]
   inStock: boolean
   condition?: 'new' | 'used'
+  shopeeUrl?: string
 }
 
 export interface CartItem {

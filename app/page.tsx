@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Truck, Shield, Clock, Award, Star } from 'lucide-react'
+import { ArrowRight, Truck, Shield, Clock, Award, Star, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/product-card'
 import { CategoryCard } from '@/components/category-card'
@@ -12,121 +12,179 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section - Estilo KaBuM com categorias */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 opacity-15">
-          <Image
-            src="/images/ciclo-laser-hero.png"
-            alt="Background"
-            fill
-            className="object-cover"
-            priority
-          />
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-gray-950 via-blue-950 to-gray-900 text-white overflow-hidden min-h-[520px] flex items-center">
+        {/* Rodas decorativas de fundo */}
+        <div className="absolute -left-32 -bottom-32 w-[500px] h-[500px] rounded-full border-[40px] border-white/5 pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-[360px] h-[360px] rounded-full border-[20px] border-orange-500/10 pointer-events-none" />
+        <div className="absolute -right-40 -top-40 w-[600px] h-[600px] rounded-full border-[50px] border-white/[0.03] pointer-events-none" />
+        <div className="absolute right-10 top-10 w-[300px] h-[300px] rounded-full border-[15px] border-orange-400/10 pointer-events-none" />
+
+        {/* Linha de pista diagonal */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
+          <div className="absolute bottom-3 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent" />
         </div>
 
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,165,0,0.3),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,165,0,0.2),transparent_50%)]" />
-        </div>
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Texto */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-sm font-semibold mb-6">
+                <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+                38 anos de tradição em Mauá - SP
+              </div>
 
-        <div className="container mx-auto px-4 py-8 relative z-10">
-          {/* Categorias na Hero - Estilo KaBuM */}
-          <div className="mb-8 overflow-x-auto pb-2 -mx-4 px-4">
+              <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight">
+                Sua bike<br />
+                <span className="text-orange-400">perfeita</span><br />
+                <span className="text-white/60 text-4xl md:text-5xl font-bold">está aqui.</span>
+              </h1>
+
+              <p className="text-lg text-blue-200/80 mb-8 max-w-md leading-relaxed">
+                Bicicletas novas e semi-novas, peças, capacetes e acessórios. Tudo com qualidade e preço justo.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <Button size="lg" className="bg-orange-500 hover:bg-orange-400 text-white font-bold px-8 py-6 text-base rounded-xl shadow-lg shadow-orange-500/30" asChild>
+                  <Link href="/produtos">
+                    Ver Produtos
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold px-8 py-6 text-base rounded-xl backdrop-blur-sm" asChild>
+                  <a href="https://shopee.com.br/ciclo.laser" target="_blank" rel="noopener noreferrer">
+                    <ShoppingBag className="mr-2 h-5 w-5" />
+                    Comprar na Shopee
+                  </a>
+                </Button>
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-8 mt-10 pt-8 border-t border-white/10">
+                <div>
+                  <p className="text-3xl font-black text-orange-400">38+</p>
+                  <p className="text-sm text-blue-200/60 mt-1">Anos de experiência</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-black text-white">1000+</p>
+                  <p className="text-sm text-blue-200/60 mt-1">Clientes satisfeitos</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-black text-white">500+</p>
+                  <p className="text-sm text-blue-200/60 mt-1">Produtos disponíveis</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bike SVG ilustrativa */}
+            <div className="hidden lg:flex justify-center items-center">
+              <div className="relative w-full max-w-lg">
+                {/* Brilho atrás da bike */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-80 h-80 rounded-full bg-orange-500/10 blur-3xl" />
+                </div>
+                <svg viewBox="0 0 500 360" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full drop-shadow-2xl">
+                  {/* Roda traseira */}
+                  <circle cx="130" cy="265" r="90" stroke="#f97316" strokeWidth="12" fill="none" opacity="0.9"/>
+                  <circle cx="130" cy="265" r="70" stroke="#f97316" strokeWidth="3" fill="none" opacity="0.2"/>
+                  <circle cx="130" cy="265" r="15" fill="#f97316" opacity="0.8"/>
+                  {/* Raios traseiros */}
+                  {[0,40,80,120,160,200,240,280,320,360].map((a,i) => (
+                    <line key={i}
+                      x1={130 + 15*Math.cos(a*Math.PI/180)}
+                      y1={265 + 15*Math.sin(a*Math.PI/180)}
+                      x2={130 + 88*Math.cos(a*Math.PI/180)}
+                      y2={265 + 88*Math.sin(a*Math.PI/180)}
+                      stroke="#f97316" strokeWidth="2" opacity="0.5"
+                    />
+                  ))}
+
+                  {/* Roda dianteira */}
+                  <circle cx="370" cy="265" r="90" stroke="#f97316" strokeWidth="12" fill="none" opacity="0.9"/>
+                  <circle cx="370" cy="265" r="70" stroke="#f97316" strokeWidth="3" fill="none" opacity="0.2"/>
+                  <circle cx="370" cy="265" r="15" fill="#f97316" opacity="0.8"/>
+                  {/* Raios dianteiros */}
+                  {[0,40,80,120,160,200,240,280,320,360].map((a,i) => (
+                    <line key={i}
+                      x1={370 + 15*Math.cos(a*Math.PI/180)}
+                      y1={265 + 15*Math.sin(a*Math.PI/180)}
+                      x2={370 + 88*Math.cos(a*Math.PI/180)}
+                      y2={265 + 88*Math.sin(a*Math.PI/180)}
+                      stroke="#f97316" strokeWidth="2" opacity="0.5"
+                    />
+                  ))}
+
+                  {/* Quadro da bike */}
+                  {/* Tubo de baixo (chain stay) */}
+                  <line x1="130" y1="265" x2="245" y2="200" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+                  {/* Tubo do assento (seat tube) */}
+                  <line x1="245" y1="200" x2="220" y2="265" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+                  {/* Tubo superior (top tube) */}
+                  <line x1="245" y1="200" x2="330" y2="165" stroke="white" strokeWidth="9" strokeLinecap="round"/>
+                  {/* Down tube */}
+                  <line x1="245" y1="200" x2="370" y2="265" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+                  {/* Fork */}
+                  <line x1="330" y1="165" x2="370" y2="265" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                  {/* Head tube */}
+                  <line x1="330" y1="145" x2="335" y2="185" stroke="white" strokeWidth="12" strokeLinecap="round"/>
+
+                  {/* Guidão */}
+                  <line x1="310" y1="145" x2="355" y2="138" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                  <line x1="355" y1="138" x2="360" y2="158" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+
+                  {/* Selim */}
+                  <line x1="245" y1="200" x2="242" y2="155" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+                  <rect x="220" y="147" width="44" height="10" rx="5" fill="white" opacity="0.9"/>
+
+                  {/* Pedivela */}
+                  <circle cx="220" cy="265" r="22" stroke="#f97316" strokeWidth="6" fill="none"/>
+                  <circle cx="220" cy="265" r="6" fill="#f97316"/>
+                  <line x1="220" y1="265" x2="205" y2="280" stroke="#f97316" strokeWidth="5" strokeLinecap="round"/>
+                  <line x1="205" y1="280" x2="195" y2="280" stroke="white" strokeWidth="4" strokeLinecap="round"/>
+
+                  {/* Corrente simplificada */}
+                  <path d="M 220 265 Q 170 280 130 265" stroke="#f97316" strokeWidth="3" fill="none" strokeDasharray="6 4" opacity="0.6"/>
+
+                  {/* Sombra no chão */}
+                  <ellipse cx="250" cy="358" rx="180" ry="10" fill="black" opacity="0.25"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Categorias rápidas */}
+          <div className="mt-12 overflow-x-auto pb-2 -mx-4 px-4">
             <div className="flex gap-3 min-w-max">
               {CATEGORIES.map((category) => (
                 <Link
                   key={category.id}
                   href={`/produtos?categoria=${category.id}`}
-                  className="flex-shrink-0 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full font-medium transition-all text-sm md:text-base border border-white/20 hover:border-orange-400"
+                  className="flex-shrink-0 px-4 py-2 bg-white/8 hover:bg-orange-500/80 text-white rounded-full font-medium transition-all text-sm border border-white/15 hover:border-orange-400"
                 >
                   {category.name}
                 </Link>
               ))}
             </div>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Banner Principal */}
-            <div className="md:col-span-2 lg:col-span-1 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-6 relative overflow-hidden">
-              <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-orange-400 rounded-full opacity-10" />
-              <div className="relative z-10">
-                <span className="inline-block px-4 py-2 rounded-full bg-white text-orange-600 font-bold text-sm mb-4">
-                  🚀 PROMOÇÃO ESPECIAL
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-                  Bicicletas em Promoção!
-                </h2>
-                <p className="text-lg text-orange-50 mb-6">
-                  Até 40% OFF em bicicletas novas e semi-novas
-                </p>
-                <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100 font-bold" asChild>
-                  <Link href="/produtos?categoria=bicicletas-novas">
-                    Ver Promoção
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
-            {/* Banner Secundário */}
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 relative overflow-hidden hidden lg:block">
-              <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-green-400 rounded-full opacity-10" />
-              <div className="relative z-10">
-                <span className="inline-block px-4 py-2 rounded-full bg-white text-green-600 font-bold text-sm mb-3">
-                  ⭐ FRETE GRÁTIS
-                </span>
-                <h3 className="text-2xl font-bold mb-3 text-white">
-                  Compras acima de R$ 300
-                </h3>
-                <p className="text-sm text-green-50">
-                  Para todo Brasil via Correios
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Seção de Hero com Texto e Imagem */}
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-                Ciclo <span className="text-orange-400">Laser</span>
-              </h1>
-              <p className="text-xl text-blue-100 mb-8 max-w-lg leading-relaxed">
-                38 anos oferecendo bicicletas de qualidade, peças, acessórios e tudo que você precisa para andar de bike! 🚴‍♂️
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold" asChild>
-                  <Link href="/produtos">
-                    Explorar Produtos
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="bg-white text-blue-900 border-white hover:bg-blue-50" asChild>
-                  <a href="https://wa.me/5511934340613" target="_blank" rel="noopener noreferrer">
-                    Chamar no WhatsApp
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="hidden md:flex justify-center">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-orange-400/20 rounded-full blur-3xl" />
-                <Image
-                  src="/images/ciclo-laser-hero.png"
-                  alt="Ciclo Laser"
-                  width={450}
-                  height={450}
-                  className="relative z-10 drop-shadow-2xl rounded-lg"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Benefícios - Estilo KaBuM */}
+      {/* Banner Shopee Mobile */}
+      <section className="lg:hidden bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 px-4">
+        <a
+          href="https://shopee.com.br/ciclo.laser"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-3 font-bold text-base"
+        >
+          <ShoppingBag className="h-5 w-5" />
+          Compre também pela nossa loja na Shopee!
+          <ArrowRight className="h-5 w-5" />
+        </a>
+      </section>
+
+      {/* Benefícios */}
       <section className="py-12 bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -142,7 +200,7 @@ export default function HomePage() {
                 <Shield className="h-6 w-6 text-green-500" />
               </div>
               <h3 className="font-bold text-sm md:text-base">Compra Segura</h3>
-              <p className="text-xs text-muted-foreground">Stripe encriptado</p>
+              <p className="text-xs text-muted-foreground">Protegido pela Shopee</p>
             </div>
             <div className="flex flex-col items-center text-center gap-3 p-4 rounded-lg bg-purple-50 hover:shadow-md transition-shadow">
               <div className="p-3 rounded-full bg-purple-500/10">
@@ -171,7 +229,7 @@ export default function HomePage() {
             {CATEGORIES.map((category) => (
               <CategoryCard
                 key={category.id}
-                href={`/produtos?categoria=${category.id}`}
+                id={category.id}
                 name={category.name}
                 icon={category.icon}
               />

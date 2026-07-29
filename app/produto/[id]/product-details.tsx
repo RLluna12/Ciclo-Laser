@@ -2,10 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
-import { ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft } from 'lucide-react'
+import { ShoppingCart, Truck, Shield, ArrowLeft, ExternalLink, Star } from 'lucide-react'
 import { Product } from '@/lib/types'
-import { useCart } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -23,14 +21,6 @@ export function ProductDetails({
   category,
   relatedProducts,
 }: ProductDetailsProps) {
-  const { addItem } = useCart()
-  const [quantity, setQuantity] = useState(1)
-
-  const handleAddToCart = () => {
-    addItem(product, quantity)
-    setQuantity(1)
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
@@ -67,7 +57,7 @@ export function ProductDetails({
       {/* Produto */}
       <div className="grid lg:grid-cols-2 gap-8 mb-16">
         {/* Imagem */}
-        <div className="relative aspect-square bg-muted rounded-2xl overflow-hidden">
+        <div className="relative aspect-square bg-muted rounded-2xl overflow-hidden shadow-lg">
           <Image
             src={product.images[0] || '/images/placeholder-product.jpg'}
             alt={product.name}
@@ -76,7 +66,7 @@ export function ProductDetails({
             priority
           />
           {product.condition === 'used' && (
-            <Badge className="absolute top-4 left-4 bg-amber-500 hover:bg-amber-600">
+            <Badge className="absolute top-4 left-4 bg-amber-500 hover:bg-amber-600 text-base px-3 py-1">
               Semi-nova
             </Badge>
           )}
@@ -99,65 +89,76 @@ export function ProductDetails({
               {category.name}
             </Link>
           )}
-          <h1 className="text-3xl font-bold mt-2 mb-4">{product.name}</h1>
+          <h1 className="text-3xl font-bold mt-2 mb-2">{product.name}</h1>
 
-          <div className="mb-6">
-            <p className="text-4xl font-bold text-primary">
+          {/* Avaliação */}
+          <div className="flex items-center gap-1 mb-4">
+            {[1,2,3,4,5].map((i) => (
+              <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            ))}
+            <span className="text-sm text-muted-foreground ml-2">5.0 · Vendido pela Ciclo Laser</span>
+          </div>
+
+          <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-6">
+            <p className="text-4xl font-bold text-orange-600">
               {formatPrice(product.priceInCents)}
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm mt-1">
               ou 3x de {formatPrice(Math.ceil(product.priceInCents / 3))} sem juros
             </p>
           </div>
 
-          <p className="text-muted-foreground mb-6">{product.description}</p>
+          <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
 
-          {/* Quantidade e Adicionar */}
-          {product.inStock && (
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <div className="flex items-center border rounded-lg">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setQuantity(quantity + 1)}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button size="lg" onClick={handleAddToCart} className="flex-1 sm:flex-none">
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Adicionar ao Carrinho
-              </Button>
+          {/* Botão Shopee */}
+          {product.inStock && product.shopeeUrl ? (
+            <div className="mb-8 space-y-3">
+              <a
+                href={product.shopeeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full py-4 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-xl transition-colors shadow-md hover:shadow-lg"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                Comprar na Shopee
+                <ExternalLink className="h-5 w-5 opacity-80" />
+              </a>
+              <a
+                href={`https://wa.me/5511934340613?text=Olá! Tenho interesse no produto: ${encodeURIComponent(product.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Tirar dúvida no WhatsApp
+              </a>
             </div>
-          )}
+          ) : !product.inStock ? (
+            <div className="mb-8 p-4 bg-gray-100 rounded-xl text-center text-gray-500 font-medium">
+              Produto temporariamente esgotado
+            </div>
+          ) : null}
 
           {/* Benefícios */}
           <div className="grid sm:grid-cols-2 gap-4">
-            <Card className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-full bg-primary/10">
-                <Truck className="h-5 w-5 text-primary" />
+            <Card className="p-4 flex items-center gap-3 border-orange-100">
+              <div className="p-2 rounded-full bg-orange-500/10">
+                <Truck className="h-5 w-5 text-orange-500" />
               </div>
               <div>
                 <p className="font-medium text-sm">Entrega para todo Brasil</p>
                 <p className="text-xs text-muted-foreground">Via Correios ou Sedex</p>
               </div>
             </Card>
-            <Card className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-full bg-primary/10">
-                <Shield className="h-5 w-5 text-primary" />
+            <Card className="p-4 flex items-center gap-3 border-green-100">
+              <div className="p-2 rounded-full bg-green-500/10">
+                <Shield className="h-5 w-5 text-green-500" />
               </div>
               <div>
                 <p className="font-medium text-sm">Compra Segura</p>
-                <p className="text-xs text-muted-foreground">Pagamento via Stripe</p>
+                <p className="text-xs text-muted-foreground">Protegido pela Shopee</p>
               </div>
             </Card>
           </div>

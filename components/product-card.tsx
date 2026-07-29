@@ -2,9 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { ShoppingCart, Eye } from 'lucide-react'
+import { ShoppingCart, Eye, ExternalLink } from 'lucide-react'
 import { Product } from '@/lib/types'
-import { useCart } from '@/lib/cart-store'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,15 +14,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart()
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    addItem(product)
-  }
-
   return (
-    <Card className="group overflow-hidden h-full flex flex-col">
+    <Card className="group overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-200">
       <Link href={`/produto/${product.id}`} className="block relative aspect-square overflow-hidden bg-muted">
         <Image
           src={product.images[0] || '/images/placeholder-product.jpg'}
@@ -40,6 +32,11 @@ export function ProductCard({ product }: ProductCardProps) {
         {!product.inStock && (
           <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
             <Badge variant="destructive">Esgotado</Badge>
+          </div>
+        )}
+        {product.shopeeUrl && product.inStock && (
+          <div className="absolute top-2 right-2">
+            <Badge className="bg-orange-500 text-white text-xs">Shopee</Badge>
           </div>
         )}
       </Link>
@@ -71,15 +68,31 @@ export function ProductCard({ product }: ProductCardProps) {
             Ver
           </Link>
         </Button>
-        <Button
-          size="sm"
-          className="flex-1"
-          onClick={handleAddToCart}
-          disabled={!product.inStock}
-        >
-          <ShoppingCart className="h-4 w-4 mr-1" />
-          Comprar
-        </Button>
+        {product.shopeeUrl ? (
+          <Button
+            size="sm"
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white"
+            asChild
+            disabled={!product.inStock}
+          >
+            <a href={product.shopeeUrl} target="_blank" rel="noopener noreferrer">
+              <ShoppingCart className="h-4 w-4 mr-1" />
+              Comprar
+            </a>
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            className="flex-1"
+            disabled={!product.inStock}
+            asChild
+          >
+            <Link href={`/produto/${product.id}`}>
+              <ShoppingCart className="h-4 w-4 mr-1" />
+              Comprar
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   )

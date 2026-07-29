@@ -58,99 +58,138 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main header - Estilo KaBuM */}
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          {/* Mobile menu */}
-          <Sheet>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon" className="text-blue-900">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80">
-              <nav className="flex flex-col gap-4 mt-8">
-                <Link href="/" className="text-lg font-semibold hover:text-blue-900">
-                  Início
-                </Link>
-                <Link href="/produtos" className="text-lg font-semibold hover:text-blue-900">
-                  Produtos
-                </Link>
-                <Button asChild variant="default" className="w-full bg-orange-500 hover:bg-orange-600">
-                  <a href="https://wa.me/5511934340613" target="_blank" rel="noopener noreferrer">
-                    Fale Conosco
-                  </a>
+      {/* Logo centralizado */}
+      <div className="bg-white py-4 border-b">
+        <div className="container mx-auto px-4 flex items-center justify-center relative">
+          {/* Menu mobile (esquerda) */}
+          <div className="absolute left-4 flex items-center gap-2 lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-blue-900">
+                  <Menu className="h-6 w-6" />
                 </Button>
-                <div className="border-t pt-4">
-                  <p className="text-sm font-medium text-muted-foreground mb-3">Categorias</p>
-                  {CATEGORIES.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      href={`/produtos?categoria=${cat.id}`}
-                      className="block py-2 text-sm hover:text-blue-900 transition-colors"
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <Link href="/" className="text-lg font-semibold hover:text-blue-900">
+                    Início
+                  </Link>
+                  <Link href="/produtos" className="text-lg font-semibold hover:text-blue-900">
+                    Produtos
+                  </Link>
+                  <Button asChild variant="default" className="w-full bg-orange-500 hover:bg-orange-600 font-bold">
+                    <a href="https://shopee.com.br/ciclo.laser" target="_blank" rel="noopener noreferrer">
+                      🛒 Comprar na Shopee
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full border-green-500 text-green-600 hover:bg-green-50">
+                    <a href="https://wa.me/5511934340613" target="_blank" rel="noopener noreferrer">
+                      Fale Conosco (WhatsApp)
+                    </a>
+                  </Button>
+                  <div className="border-t pt-4">
+                    <p className="text-sm font-medium text-muted-foreground mb-3">Categorias</p>
+                    {CATEGORIES.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        href={`/produtos?categoria=${cat.id}`}
+                        className="block py-2 text-sm hover:text-blue-900 transition-colors"
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
 
-          {/* Logo */}
+          {/* Logo centralizado */}
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/images/logo.png"
               alt="Ciclo Laser Bicicletaria"
-              width={140}
-              height={70}
-              className="h-12 md:h-16 w-auto"
+              width={180}
+              height={90}
+              className="h-16 md:h-20 w-auto"
               priority
             />
           </Link>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-4">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Busque por bicicleta, peça ou acessório..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 rounded-lg border-2 border-blue-900 focus:border-orange-500"
-              />
-            </div>
-          </form>
-
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-6">
-            <Link href="/produtos" className="text-sm font-medium text-blue-900 hover:text-orange-500 transition-colors">
-              Todos os Produtos
+          {/* Carrinho (direita) mobile */}
+          <div className="absolute right-4 flex items-center gap-2">
+            <Link href="/carrinho" className="relative lg:hidden">
+              <Button variant="ghost" size="icon" className="relative text-blue-900 hover:bg-blue-50">
+                <ShoppingCart className="h-6 w-6" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Button>
             </Link>
-            <div className="w-px h-6 bg-gray-300" />
-            <Button asChild size="sm" className="hidden xl:inline-flex bg-orange-500 hover:bg-orange-600 text-white font-semibold">
-              <a href="https://wa.me/5511934340613" target="_blank" rel="noopener noreferrer">
-                Fale Conosco
-              </a>
-            </Button>
-          </nav>
-
-          {/* Cart */}
-          <Link href="/carrinho" className="relative flex-shrink-0">
-            <Button variant="ghost" size="icon" className="relative text-blue-900 hover:bg-blue-50">
-              <ShoppingCart className="h-6 w-6" />
-              {itemCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600">
-                  {itemCount}
-                </Badge>
-              )}
-            </Button>
-          </Link>
+          </div>
         </div>
+      </div>
 
-        {/* Mobile search */}
-        <form onSubmit={handleSearch} className="md:hidden mt-3">
+      {/* Barra de navegação + busca (desktop) */}
+      <div className="hidden lg:block bg-blue-900">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex items-center gap-6">
+            {/* Links */}
+            <nav className="flex items-center gap-6 flex-shrink-0">
+              <Link href="/" className="text-sm font-medium text-white hover:text-orange-300 transition-colors">
+                Início
+              </Link>
+              <Link href="/produtos" className="text-sm font-medium text-white hover:text-orange-300 transition-colors">
+                Produtos
+              </Link>
+            </nav>
+
+            {/* Busca centralizada */}
+            <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Busque por bicicleta, peça ou acessório..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 rounded-lg bg-white border-0 focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
+            </form>
+
+            {/* Botões direita */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Button asChild size="sm" className="bg-orange-500 hover:bg-orange-600 text-white font-bold">
+                <a href="https://shopee.com.br/ciclo.laser" target="_blank" rel="noopener noreferrer">
+                  🛒 Shopee
+                </a>
+              </Button>
+              <Button asChild size="sm" variant="outline" className="border-white text-white hover:bg-white/10">
+                <a href="https://wa.me/5511934340613" target="_blank" rel="noopener noreferrer">
+                  WhatsApp
+                </a>
+              </Button>
+              <Link href="/carrinho" className="relative">
+                <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10">
+                  <ShoppingCart className="h-6 w-6" />
+                  {itemCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600">
+                      {itemCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Busca mobile */}
+      <div className="lg:hidden bg-gray-50 border-b px-4 py-2">
+        <form onSubmit={handleSearch}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
